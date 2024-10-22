@@ -7,8 +7,9 @@
 <input type="datetime-local" id="Test_DatetimeLocal" name="date" class="border p-2 rounded">
 <button id="loadData" 
 class="bg-blue-500 text-white py-2 px-4 rounded mt-4" 
-
->Load Data</button>
+hx-target="#sensor-data-table"
+hx-swap="outerHTML"
+hx-trigger="click">Load Data</button>
 <h1 class="text-2xl font-bold mb-5">Sensor Data Logs</h1>
 
 
@@ -46,7 +47,6 @@ class="bg-blue-500 text-white py-2 px-4 rounded mt-4"
 
     
 </div>
-
 <script>
     document.getElementById('loadData').addEventListener('click', function() {
         const selectedDate = document.getElementById('Test_DatetimeLocal').value;
@@ -54,14 +54,12 @@ class="bg-blue-500 text-white py-2 px-4 rounded mt-4"
         if (selectedDate) {
             
             const [datePart, timePart] = selectedDate.split('T');
-            const formattedDate = datePart.replace(/-/g, '/');
-            fetch(`/getdata?date=${formattedDate}`);
-        }
+            const formattedDate = datePart.replace(/-/g, '/'); 
+            fetch( `/getdata?date=${formattedDate}`);}
             
             else {
             alert('Please select a date and time.');
         }
     });
 </script>
-
 {% endblock %}
