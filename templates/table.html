@@ -3,12 +3,18 @@
 {% block title %}Sensor Data{% endblock %}
 
 {% block content %}
+<input type="date" id="Test_DatetimeLocal" name="date" class="border p-2 rounded" >
 
-<input type="datetime-local" id="Test_DatetimeLocal" name="date" class="border p-2 rounded">
-<button id="loadData" 
-class="bg-blue-500 text-white py-2 px-4 rounded mt-4" 
+    <button id="loadData" 
+            type="button"
+            class="bg-blue-500 text-white py-2 px-4 rounded mt-4"
+            hx-get="/getData"
+            hx-vals='js:{
+                "date": fmtDate
+                     }' 
+           hx-trigger="click"  hx-target="#sensor-data-table" hx-swap="outerHTML">Load Data
+    </button>
 
->Load Data</button>
 <h1 class="text-2xl font-bold mb-5">Sensor Data Logs</h1>
 
 
@@ -30,7 +36,7 @@ class="bg-blue-500 text-white py-2 px-4 rounded mt-4"
         <tbody id="sensor-data-table">
             {% for item in data %}
             <tr class="border-b hover:bg-gray-100">
-                <td class="px-4 py-2">{{ item.time }}</td>
+                <td class="px-4 py-2" data-raw-time="{{ item.time }}"></td>
                 <td class="px-4 py-2">{{ item.humidity }}</td>
                 <td class="px-4 py-2">{{ item.temperature }}</td>
                 <td class="px-4 py-2">{{ item.EC }}</td>
@@ -48,20 +54,48 @@ class="bg-blue-500 text-white py-2 px-4 rounded mt-4"
 </div>
 
 <script>
-    document.getElementById('loadData').addEventListener('click', function() {
+    let fmtDate="2024/10/22"
+    document.getElementById('Test_DatetimeLocal').addEventListener('change', function(event) {
         const selectedDate = document.getElementById('Test_DatetimeLocal').value;
-
+        
         if (selectedDate) {
             
-            const [datePart, timePart] = selectedDate.split('T');
-            const formattedDate = datePart.replace(/-/g, '/');
-            fetch(`/getdata?date=${formattedDate}`);
-        }
+            fmtDate = selectedDate.replace(/-/g, '/');
+            document.getElementById("date").value = fmtDate;
+            alert(formattedDate)
+
             
-            else {
-            alert('Please select a date and time.');
+        } else {
+            event.preventDefault(); 
+            alert('Please select a valid date.');
         }
+        
     });
+    document.querySelectorAll('[data-raw-time]').forEach(function(element) {
+    const rawTime = element.getAttribute('data-raw-time');
+    
+    
+    const dateObj = new Date(rawTime);
+    
+    
+    const day = String(dateObj.getDate()).padStart(2, '0');  
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
+    const year = dateObj.getFullYear();
+    
+    
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+    
+    
+    const formattedDate = `${day}/${month}/${year}`;
+    
+    
+    const formattedDateTime = `${formattedDate} ${hours}:${minutes}:${seconds}`;
+    
+    element.textContent = formattedDateTime;
+});
+
 </script>
 
 {% endblock %}

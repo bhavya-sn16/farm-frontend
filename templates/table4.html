@@ -3,10 +3,18 @@
 {% block title %}Sensor Data{% endblock %}
 
 {% block content %}
+<input type="date" id="Test_DatetimeLocal" name="date" class="border p-2 rounded" >
+<input type="hidden" id="date" name="date">
+    <button id="loadData" 
+            type="button"
+            class="bg-blue-500 text-white py-2 px-4 rounded mt-4"
+            hx-get="/getData"
+            hx-vals='js:{
+                "date": fmtDate
+                     }' 
+           hx-trigger="click"  hx-target="#sensor-data-table" hx-swap="outerHTML">Load Data
+    </button>
 
-<input type="datetime-local" id="Test_DatetimeLocal" name="date" class="border p-2 rounded">
-<button id="loadData" 
-class="bg-blue-500 text-white py-2 px-4 rounded mt-4" >Load Data</button>
 <h1 class="text-2xl font-bold mb-5">Sensor Data Logs</h1>
 
 
@@ -28,7 +36,7 @@ class="bg-blue-500 text-white py-2 px-4 rounded mt-4" >Load Data</button>
         <tbody id="sensor-data-table">
             {% for item in data %}
             <tr class="border-b hover:bg-gray-100">
-                <td class="px-4 py-2">{{ item.time }}</td>
+                <td class="px-4 py-2">{{ fmtDate }}</td>
                 <td class="px-4 py-2">{{ item.humidity }}</td>
                 <td class="px-4 py-2">{{ item.temperature }}</td>
                 <td class="px-4 py-2">{{ item.EC }}</td>
@@ -44,4 +52,25 @@ class="bg-blue-500 text-white py-2 px-4 rounded mt-4" >Load Data</button>
 
     
 </div>
+
+<script>
+    let fmtDate="2024/10/22"
+    document.getElementById('Test_DatetimeLocal').addEventListener('change', function(event) {
+        const selectedDate = document.getElementById('Test_DatetimeLocal').value;
+        
+        if (selectedDate) {
+            const [datePart] = selectedDate.split('T');
+            fmtDate = datePart.replace(/-/g, '/');
+            document.getElementById("date").value = fmtDate;
+            alert(formattedDate)
+
+            
+        } else {
+            event.preventDefault(); 
+            alert('Please select a valid date.');
+        }
+        
+    });
+</script>
+
 {% endblock %}

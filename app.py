@@ -7,6 +7,7 @@ from datetime import datetime
 app  = Flask(__name__)
 
 
+
 # @app.route('/')
 # def table():
 #    print("nnnnnnn")
@@ -17,33 +18,33 @@ def display_sensor_data():
     
     fastapi_url = "http://127.0.0.1:8000/getdata"  
     response = requests.get(fastapi_url, params={})
-
+    print(response)
     if response.status_code == 200:
         data = response.json().get('data')
     else:
         data = []
 
-    print(data)
     return render_template('table.html', data=data)   
 
-@app.route('/getdata',methods=['GET'])
-def display_sensor_data_withDate():
+@app.route('/getData',methods = ['GET','POST'])
+def data_withDate():
 
     selected_date = request.args.get('date')
+    print(selected_date)
+
     # date_part, time_part = selected_date.split('T')
     # formatted_date = date_part.replace('-', '/')
     
     fastapi_url = "http://127.0.0.1:8000/getdata"  
-    response = requests.get(fastapi_url, params={"date": selected_date})
-    print(selected_date)
-
-    
+    response = requests.get(fastapi_url, params={"date":selected_date})
+    print(response)
     if response.status_code == 200:
         data = response.json().get('data')
+        
     else:
         data = []
     print(data)
-    return render_template('reload.html', data=data)
+    return render_template('partials/reload.html', data=data)
 
 
 
