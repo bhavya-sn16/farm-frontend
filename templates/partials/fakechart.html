@@ -1,0 +1,56 @@
+<!-- chart.html -->
+<!-- Ensure that data is passed to JavaScript properly -->
+<div id="sensorDataContainer" data-sensor-data="{{ data | tojson | safe }}"></div>
+<canvas id="sensorDataChart" width="400" height="200"></canvas>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Retrieve and parse the sensor data from the data attribute
+        const sensorDataElement = document.getElementById('sensorDataContainer');
+        const data = JSON.parse(sensorDataElement.getAttribute('data-sensor-data') || '[]');
+
+        if (data.length === 0) {
+            console.warn("No sensor data available.");
+            return;
+        }
+
+        // Extract labels and data for the chart
+        const labels = data.map(item => item.time); // X-axis labels (timestamps)
+        const dataset = data.map(item => item.N);    // Y-axis values for N
+
+        // Create the chart
+        const ctx = document.getElementById('sensorDataChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,  // X-axis labels
+                datasets: [{ 
+                    label: 'Nitrogen (N)',
+                    data: dataset,  // Y-axis values
+                    borderColor: 'rgba(75, 192, 192, 1)', // Customize line color
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Nitrogen Levels (N)'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

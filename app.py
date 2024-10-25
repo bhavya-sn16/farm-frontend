@@ -46,7 +46,32 @@ def data_withDate():
     print(data)
     return render_template('partials/reload.html', data=data)
 
+@app.route('/chartData', methods=['GET', 'POST'])
+def chart_withDate():
+    selected_date = request.args.get('date')
+    
 
+    fastapi_url = "http://127.0.0.1:8000/getdata"
+    response = requests.get(fastapi_url, params={"date": selected_date})
+
+    if response.status_code == 200:
+        data = response.json().get('data')
+    else:
+        data = []
+    print(data)
+    print(f"Selected Date: {selected_date}")
+    return render_template('partials/chart.html', data=data)
+
+@app.template_filter("strftime")
+def format_datetime(value, format="%Y-%m-%d"):
+    """Format a datetime object as a string."""
+    if isinstance(value, datetime):
+        return value.strftime(format)
+    return value  # Return unformatted if value is not a datetime
+   
+@app.template_filter("str_to_date")
+def str_to_date(date_string, format_string="%Y/%m/%d %H:%M:%S"):
+    return datetime.strptime(date_string, format_string)
 
 
 # @app.route('/getdata')

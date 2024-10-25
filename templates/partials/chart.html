@@ -1,0 +1,50 @@
+<!-- chart.html -->
+<div id="sensorDataContainer" data-sensor-data="{{ data}}"></div>
+<h3>GRAPHICAL REPRESENTATION</h3>
+<canvas id="sensorDataChart" width="400" height="200"></canvas>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        alert("chart")
+        console.log("chart")
+        const data = JSON.parse(sensorDataElement.getAttribute('data-sensor-data'));    
+        const labels = data.map(item => item.time);
+        const dataset = data.map(item => item.N);
+        const ctx = document.getElementById('sensorDataChart').getContext('2d');
+    
+    
+        const myChart = new Chart(ctx, {
+
+    type: 'line', 
+
+    data: {
+
+        labels: labels,
+
+        datasets: [{ label: 'Nitrogen (N)',
+                    data: dataset,  // Y-axis values
+                    borderColor: 'rgba(75, 192, 192, 1)', // Customize line color
+                    fill: false
+                  }]
+
+        },options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Nitrogen (N) Levels'
+                        }
+                    }
+                }
+            }
+
+});
+});
+</script>

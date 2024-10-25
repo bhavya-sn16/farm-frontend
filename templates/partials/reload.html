@@ -2,7 +2,7 @@
         <tbody id="sensor-data-table">
             {% for item in data %}
             <tr class="border-b hover:bg-gray-100">
-                <td class="px-4 py-2" data-raw-time="{{ item.time }}"></td>
+                <td class="px-4 py-2">{{ item.time|str_to_date('%Y/%m/%d %H:%M:%S')|strftime('%d-%m-%Y: %H:%M')}}</td>
                 <td class="px-4 py-2">{{ item.humidity }}</td>
                 <td class="px-4 py-2">{{ item.temperature }}</td>
                 <td class="px-4 py-2">{{ item.EC }}</td>
@@ -14,31 +14,3 @@
             </tr>
             {% endfor %}
         </tbody>
-
-        <script>
-            document.querySelectorAll('[data-raw-time]').forEach(function(element) {
-    const rawTime = element.getAttribute('data-raw-time');
-    
-    
-    const dateObj = new Date(rawTime);
-    
-    
-    const day = String(dateObj.getDate()).padStart(2, '0');  
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');  
-    const year = dateObj.getFullYear();
-    
-    
-    const hours = String(dateObj.getHours()).padStart(2, '0');
-    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-    const seconds = String(dateObj.getSeconds()).padStart(2, '0');
-    
-    
-    const formattedDate = `${day}/${month}/${year}`;
-    
-   
-    const formattedDateTime = `${formattedDate} ${hours}:${minutes}:${seconds}`;
-    
-    
-    element.textContent = formattedDateTime;
-});
-        </script>

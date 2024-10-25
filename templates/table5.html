@@ -14,16 +14,11 @@
                      }' 
            hx-trigger="click"  hx-target="#sensor-data-table" hx-swap="outerHTML">Load Data
     </button>
-    <button id="loadGraph" class="bg-green-500 text-white py-2 px-4 rounded mt-4" hx-get="/chartData"
-    hx-vals='js:{
-        "date": fmtDate
-             }' 
-   hx-trigger="click"  hx-target="#chart" hx-swap="outerHTML">Load Chart</button>
 
 <h1 class="text-2xl font-bold mb-5">Sensor Data Logs</h1>
 
 
-<div class="overflow-x-auto" id="chart">
+<div class="overflow-x-auto">
     <table class="table-auto w-full bg-white shadow-md rounded-lg" >
         <thead class="bg-gray-600 text-white">
             <tr>
@@ -41,7 +36,7 @@
         <tbody id="sensor-data-table">
             {% for item in data %}
             <tr class="border-b hover:bg-gray-100">
-                <td class="px-4 py-2">{{ item.time|str_to_date('%Y/%m/%d %H:%M:%S')|strftime('%d-%m-%Y: %H:%M')}}</td>
+                <td class="px-4 py-2" data-raw-time="{{ item.time }}"></td>
                 <td class="px-4 py-2">{{ item.humidity }}</td>
                 <td class="px-4 py-2">{{ item.temperature }}</td>
                 <td class="px-4 py-2">{{ item.EC }}</td>
@@ -76,7 +71,31 @@
         }
         
     });
+    document.querySelectorAll('[data-raw-time]').forEach(function(element) {
+    const rawTime = element.getAttribute('data-raw-time');
     
+    
+    const dateObj = new Date(rawTime);
+    
+    
+    const day = String(dateObj.getDate()).padStart(2, '0');  
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
+    const year = dateObj.getFullYear();
+    
+    
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    const seconds = String(dateObj.getSeconds()).padStart(2, '0');
+    
+    
+    const formattedDate = `${day}/${month}/${year}`;
+    
+    
+    const formattedDateTime = `${formattedDate} ${hours}:${minutes}:${seconds}`;
+    
+    element.textContent = formattedDateTime;
+});
+
 </script>
 
 {% endblock %}
